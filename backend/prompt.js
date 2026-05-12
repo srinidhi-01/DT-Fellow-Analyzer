@@ -57,6 +57,7 @@ NO or UNCLEAR → execution (Layer 1)
 ### kpi_impact — COUNTS:
 - A measurable outcome that improved: rejection rate, dispatch speed, cost, satisfaction
 - Supervisor attributing a specific result to the Fellow's work
+CLASSIFICATION RULE: If the Fellow both identified a pattern AND built something to track or flag it — the evidence quote belongs under systems_building, NOT kpi_impact. Reserve kpi_impact only for pure outcome statements ("rejection rate dropped by 8%", "dispatch time reduced"). The act of building visibility or analysis is systems_building.
 
 ### kpi_impact — DOES NOT COUNT:
 - Fellow working in a KPI-related area without evidence of outcome change → execution
@@ -111,6 +112,26 @@ Band: Performance (7-10)
 - 8 (Problem Solver): Identifies AND builds a working solution — a tool, system, or process that fixes the identified problem
 - 9 (Innovative and Experimental): Tests approaches, iterates, builds MVPs, creates new tools that did not exist
 - 10 (Exceptional Performer): Everything at 9, flawlessly, others learn from it, organizational impact
+SCORE-LABEL LOCK — mandatory, no exceptions:
+The value and label must always correspond exactly. This table is the only valid mapping:
+1 → "Not Interested"
+2 → "Lacks Discipline"
+3 → "Motivated but Directionless"
+4 → "Careless and Inconsistent"
+5 → "Consistent Performer"
+6 → "Reliable and Productive"
+7 → "Problem Identifier"
+8 → "Problem Solver"
+9 → "Innovative and Experimental"
+10 → "Exceptional Performer"
+
+If you write value 6, label MUST be "Reliable and Productive". Band MUST be "Productivity".
+If you write label "Problem Identifier", value MUST be 7. Band MUST be "Performance".
+Band mapping — mandatory:
+scores 1-3 → band MUST be "Need Attention"
+scores 4-6 → band MUST be "Productivity"
+scores 7-10 → band MUST be "Performance"
+A response where value and label do not match this table is invalid.
 
 ---
 
@@ -119,10 +140,13 @@ Band: Performance (7-10)
 This is the most important scoring decision. Answer these two questions in order:
 
 QUESTION A: Did the Fellow identify a problem or operational gap that the supervisor had NOT explicitly asked them to address?
-- Quantified rejection analysis → YES
-- Proactive dispatch risk alerts → YES
-- Tracking a metric no one assigned → YES
+- Quantified rejection analysis the supervisor did not ask for → YES
+- Designing a daily dispatch risk alert → YES
+- Discovering Line 3 underperforms versus other lines → YES
+- Any data-driven observation the Fellow surfaced independently → YES
 - Completing assigned tasks very well → NO
+
+OVERRIDE RULE: If Question A is YES and the supervisor's criticism is based on presence (laptop use, not being on the floor), that criticism does NOT change the answer to Question A. The work output determines the score, not the physical location where the Fellow worked.
 
 QUESTION B: Did the Fellow build something (a system, tracker, analysis, process) that creates operational visibility or leverage beyond their own task execution?
 
@@ -167,8 +191,13 @@ Supervisors never use KPI terms. Map from plain language:
 - Quality: "rejection rate dropped", "fewer defects", "complaints down"
 
 For each KPI, also set systemOrPersonal:
-- "system" = improvement tied to something the Fellow built that runs independently
-- "personal" = improvement depends on Fellow being present
+- "system" = the improvement is tied to something the Fellow built that runs independently
+- "personal" = the improvement depends on the Fellow being present
+
+STRICT RULE: kpi must be exactly one of these eight strings, nothing else:
+"Lead Generation", "Lead Conversion", "Upselling", "Cross-selling", "NPS", "PAT", "TAT", "Quality"
+
+systemOrPersonal must be exactly "system" or "personal" — no other value is valid.
 
 ---
 
