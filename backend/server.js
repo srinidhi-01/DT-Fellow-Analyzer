@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const { buildPrompt } = require("./prompt"); 
 
 const app = express();
 
@@ -15,61 +16,7 @@ app.post("/analyze", async (req, res) => {
   "http://localhost:11434/api/generate",
   {
     model: "llama3.2",
-    prompt: `
-You are an AI evaluator for DeepThought Fellows.
-
-Analyze the supervisor transcript carefully.
-
-Return ONLY valid JSON.
-
-The JSON must contain:
-
-{
-  "score": {
-    "value": number,
-    "label": string,
-    "justification": string
-  },
-  "evidence": [
-    {
-      "quote": string,
-      "signal": "positive" | "negative" | "neutral",
-      "interpretation": string
-    }
-  ],
-  "gaps": [
-    {
-      "dimension": string,
-      "detail": string
-    }
-  ],
-  "followUpQuestions": [
-    {
-      "question": string,
-      "targetGap": string
-    }
-  ]
-}
-
-Scoring rules:
-1 = Not Interested
-2 = Lacks Discipline
-3 = Motivated but Directionless
-4 = Careless and Inconsistent
-5 = Consistent Performer
-6 = Reliable and Productive
-7 = Problem Identifier
-8 = Problem Solver
-9 = Innovative and Experimental
-10 = Exceptional Performer
-
-Important distinction:
-Score 6 = reliable executor.
-Score 7 = identifies problems independently.
-
-Transcript:
-${transcript}
-`,
+    prompt: buildPrompt(transcript),
     stream: false,
   }
 );
