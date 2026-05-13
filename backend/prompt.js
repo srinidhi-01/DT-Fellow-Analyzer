@@ -125,13 +125,15 @@ The value and label must always correspond exactly. This table is the only valid
 9 → "Innovative and Experimental"
 10 → "Exceptional Performer"
 
-If you write value 6, label MUST be "Reliable and Productive". Band MUST be "Productivity".
 If you write label "Problem Identifier", value MUST be 7. Band MUST be "Performance".
-Band mapping — mandatory:
-scores 1-3 → band MUST be "Need Attention"
-scores 4-6 → band MUST be "Productivity"
-scores 7-10 → band MUST be "Performance"
 A response where value and label do not match this table is invalid.
+
+Band mapping — mandatory, no exceptions:
+value 1, 2, or 3 → band MUST be exactly "Need Attention"
+value 4, 5, or 6 → band MUST be exactly "Productivity"
+value 7, 8, 9, or 10 → band MUST be exactly "Performance"
+
+Triple-check: if value is 7 and band says "Need Attention" or "Productivity" — that is wrong. Fix it before outputting.
 
 ---
 
