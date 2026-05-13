@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Supervisor Feedback Analyzer</title>
   <style>
-    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -16,24 +15,11 @@
       padding: 32px 16px;
     }
 
-    .container {
-      max-width: 820px;
-      margin: 0 auto;
-    }
+    .container { max-width: 820px; margin: 0 auto; }
 
-    /* ── Header ── */
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .subtitle {
-      font-size: 0.875rem;
-      color: #666;
-      margin-bottom: 28px;
-    }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { font-size: 0.875rem; color: #666; margin-bottom: 28px; }
 
-    /* ── Input card ── */
     .card {
       background: #fff;
       border-radius: 10px;
@@ -52,6 +38,32 @@
       margin-bottom: 8px;
     }
 
+    /* ── Sample transcript buttons ── */
+    .sample-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .sample-btn {
+      padding: 5px 12px;
+      background: #f0f0f0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #444;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .sample-btn:hover { background: #e2e2e2; border-color: #bbb; }
+    .sample-label {
+      font-size: 0.75rem;
+      color: #999;
+      align-self: center;
+      margin-right: 2px;
+    }
+
     textarea {
       width: 100%;
       height: 180px;
@@ -64,13 +76,11 @@
       font-family: inherit;
       transition: border-color 0.2s;
     }
-    textarea:focus {
-      outline: none;
-      border-color: #4f46e5;
-    }
+    textarea:focus { outline: none; border-color: #4f46e5; }
 
-    button {
-      margin-top: 14px;
+    .btn-row { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+
+    button#analyzeBtn {
       padding: 10px 24px;
       background: #4f46e5;
       color: #fff;
@@ -81,174 +91,104 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    button:hover { background: #4338ca; }
-    button:disabled { background: #a5b4fc; cursor: not-allowed; }
+    button#analyzeBtn:hover { background: #4338ca; }
+    button#analyzeBtn:disabled { background: #a5b4fc; cursor: not-allowed; }
 
-    /* ── Status message ── */
-    #status {
-      font-size: 0.85rem;
-      color: #666;
-      margin-top: 10px;
-      min-height: 20px;
-    }
-
-    /* ── Score badge ── */
-    .score-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .score-badge {
-      width: 64px;
-      height: 64px;
+    /* ── Spinner ── */
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #4f46e5;
       border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
+      animation: spin 0.7s linear infinite;
       flex-shrink: 0;
     }
-    .score-badge .score-num {
-      font-size: 1.6rem;
-      line-height: 1;
-    }
-    .score-badge .score-max {
-      font-size: 0.65rem;
-      opacity: 0.7;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner.visible { display: block; }
 
-    /* Band colours */
-    .band-attention  { background: #fee2e2; color: #991b1b; }
+    #status { font-size: 0.85rem; color: #666; margin-top: 10px; min-height: 20px; }
+
+    /* ── Score badge ── */
+    .score-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .score-badge {
+      width: 64px; height: 64px; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; font-weight: 700; flex-shrink: 0;
+    }
+    .score-badge .score-num { font-size: 1.6rem; line-height: 1; }
+    .score-badge .score-max { font-size: 0.65rem; opacity: 0.7; }
+
+    .band-attention   { background: #fee2e2; color: #991b1b; }
     .band-productivity { background: #fef3c7; color: #92400e; }
     .band-performance  { background: #d1fae5; color: #065f46; }
 
     .score-meta { flex: 1; }
     .score-label { font-size: 1.1rem; font-weight: 700; }
     .score-band  { font-size: 0.8rem; color: #666; margin-top: 2px; }
-    .score-justification {
-      font-size: 0.875rem;
-      color: #444;
-      margin-top: 8px;
-      line-height: 1.55;
-    }
+    .score-justification { font-size: 0.875rem; color: #444; margin-top: 8px; line-height: 1.55; }
 
     .confidence-pill {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-top: 6px;
+      display: inline-block; padding: 2px 10px; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600; margin-top: 6px;
     }
     .conf-high   { background: #d1fae5; color: #065f46; }
     .conf-medium { background: #fef3c7; color: #92400e; }
     .conf-low    { background: #fee2e2; color: #991b1b; }
 
-    /* ── Section titles ── */
     .section-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: #888;
-      margin-bottom: 12px;
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: #888; margin-bottom: 12px;
     }
 
-    /* ── Evidence items ── */
+    /* ── Evidence ── */
     .evidence-item {
-      border-left: 3px solid #ddd;
-      padding: 10px 14px;
-      margin-bottom: 10px;
-      border-radius: 0 6px 6px 0;
-      background: #fafafa;
+      border-left: 3px solid #ddd; padding: 10px 14px;
+      margin-bottom: 10px; border-radius: 0 6px 6px 0; background: #fafafa;
     }
     .evidence-item.positive { border-left-color: #10b981; }
     .evidence-item.negative { border-left-color: #ef4444; }
     .evidence-item.neutral  { border-left-color: #94a3b8; }
+    .evidence-quote { font-size: 0.875rem; font-style: italic; color: #333; margin-bottom: 4px; }
+    .evidence-meta  { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+    .tag { font-size: 0.7rem; padding: 2px 8px; border-radius: 999px; background: #e5e7eb; color: #374151; font-weight: 600; }
+    .tag.survivable   { background: #d1fae5; color: #065f46; }
+    .tag.unsurviable  { background: #fee2e2; color: #991b1b; }
+    .evidence-interpretation { font-size: 0.8rem; color: #555; }
 
-    .evidence-quote {
-      font-size: 0.875rem;
-      font-style: italic;
-      color: #333;
-      margin-bottom: 4px;
-    }
-    .evidence-meta {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 4px;
-    }
-    .tag {
-      font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      color: #374151;
-      font-weight: 600;
-    }
-    .tag.survivable  { background: #d1fae5; color: #065f46; }
-    .tag.unsurviable { background: #fee2e2; color: #991b1b; }
-    .evidence-interpretation {
-      font-size: 0.8rem;
-      color: #555;
-    }
-
-    /* ── Bias pills ── */
+    /* ── Biases ── */
     .bias-item {
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 8px;
-      font-size: 0.85rem;
+      background: #fff7ed; border: 1px solid #fed7aa;
+      border-radius: 6px; padding: 10px 14px; margin-bottom: 8px; font-size: 0.85rem;
     }
     .bias-type  { font-weight: 700; color: #c2410c; margin-bottom: 2px; }
     .bias-quote { font-style: italic; color: #555; margin-bottom: 2px; }
     .bias-adj   { color: #666; font-size: 0.8rem; }
 
-    /* ── KPI chips ── */
-    .kpi-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .kpi-chip {
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 0.8rem;
-    }
+    /* ── KPI ── */
+    .kpi-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .kpi-chip { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 12px; font-size: 0.8rem; }
     .kpi-name { font-weight: 700; color: #1d4ed8; }
     .kpi-sys  { font-size: 0.7rem; color: #666; margin-top: 2px; }
 
     /* ── Gaps ── */
     .gap-item {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 8px;
+      background: #fef2f2; border: 1px solid #fecaca;
+      border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;
     }
     .gap-dim    { font-weight: 700; color: #dc2626; font-size: 0.8rem; margin-bottom: 3px; }
     .gap-detail { font-size: 0.85rem; color: #444; }
 
-    /* ── Follow-up questions ── */
+    /* ── Questions ── */
     .question-item {
-      background: #f5f3ff;
-      border: 1px solid #ddd6fe;
-      border-radius: 6px;
-      padding: 12px 14px;
-      margin-bottom: 8px;
+      background: #f5f3ff; border: 1px solid #ddd6fe;
+      border-radius: 6px; padding: 12px 14px; margin-bottom: 8px;
     }
     .question-text    { font-size: 0.875rem; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
     .question-target  { font-size: 0.75rem; color: #7c3aed; font-weight: 600; margin-bottom: 4px; }
     .question-looking { font-size: 0.8rem; color: #555; }
 
-    /* ── Hidden by default ── */
     #results { display: none; }
   </style>
 </head>
@@ -258,21 +198,29 @@
   <h1>Supervisor Feedback Analyzer</h1>
   <p class="subtitle">DeepThought Fellows · Powered by local Ollama</p>
 
-  <!-- Input -->
   <div class="card">
     <label for="transcript">Supervisor Transcript</label>
-    <textarea
-      id="transcript"
-      placeholder="Paste the supervisor's transcript here..."
-    ></textarea>
-    <button id="analyzeBtn" onclick="analyze()">Analyze Transcript</button>
+
+    <!-- Sample transcript loader buttons -->
+    <div class="sample-row">
+      <span class="sample-label">Load sample:</span>
+      <button class="sample-btn" onclick="loadSample('karthik')">Karthik (Score 6)</button>
+      <button class="sample-btn" onclick="loadSample('meena')">Meena (Score 7)</button>
+      <button class="sample-btn" onclick="loadSample('anil')">Anil (Score 5)</button>
+    </div>
+
+    <textarea id="transcript" placeholder="Paste the supervisor's transcript here, or load a sample above..."></textarea>
+
+    <div class="btn-row">
+      <button id="analyzeBtn" onclick="analyze()">Analyze Transcript</button>
+      <div class="spinner" id="spinner"></div>
+    </div>
     <div id="status"></div>
   </div>
 
   <!-- Results -->
   <div id="results">
 
-    <!-- Score -->
     <div class="card">
       <div class="section-title">Score</div>
       <div class="score-row">
@@ -289,46 +237,88 @@
       </div>
     </div>
 
-    <!-- Biases -->
     <div class="card" id="biasCard">
       <div class="section-title">Biases Detected</div>
       <div id="biasContainer"></div>
     </div>
 
-    <!-- Evidence -->
     <div class="card">
       <div class="section-title">Evidence</div>
       <div id="evidenceContainer"></div>
     </div>
 
-    <!-- KPI Mapping -->
     <div class="card" id="kpiCard">
       <div class="section-title">KPI Mapping</div>
       <div class="kpi-grid" id="kpiContainer"></div>
     </div>
 
-    <!-- Gaps -->
     <div class="card" id="gapCard">
       <div class="section-title">Gaps</div>
       <div id="gapContainer"></div>
     </div>
 
-    <!-- Follow-up Questions -->
     <div class="card" id="questionCard">
       <div class="section-title">Follow-up Questions</div>
       <div id="questionContainer"></div>
     </div>
 
-  </div><!-- /results -->
+  </div>
 </div>
 
 <script>
-  // ── Helpers ────────────────────────────────────────────────────
+  // ── Sample transcripts ──────────────────────────────────────────
+  const SAMPLES = {
+    karthik: `Karthik has been with us for about four months now. Very sincere boy. Always on the floor, always present. The workers know him, he knows them.
 
+He helps me with production tracking. Every evening he updates the sheet and sends it to me on WhatsApp. I don't have to ask him — he just does it.
+
+He also coordinates with the quality team when there are customer complaints. If a Tier 1 customer calls about a rejection, Karthik follows up, gets the report, and sends it to me the same day.
+
+He did one good thing — he did a cycle time study on the drum brake line. Found that we were losing about 10 minutes per batch because of a changeover sequence issue. We fixed it. Small thing but useful.
+
+He doesn't really push back. If I tell him to do something, he does it. He hasn't come to me with something I hadn't thought of yet. But he's reliable. I give him a task, it gets done. I don't have to follow up.`,
+
+    meena: `Meena. Look, she is smart. No doubt. She understands things quickly. But I have some concerns.
+
+She spends too much time on her laptop. In a garment factory, the action is on the floor — cutting, stitching, finishing, packing. If you're not on the floor, you're not seeing what's happening. I tell her — go to the floor, talk to the line supervisors, see what's stuck. She goes, but after 30 minutes she's back at her desk typing.
+
+She made some Excel sheets. Fine. One is an order tracker — which order is at which stage, what's the expected completion date. Another one tracks rejection percentages by line. She showed it to me last week in a meeting. The data was correct, I'll give her that. She found that Line 3 has 14% rejection compared to 6% average on the other lines. Nobody had quantified this before.
+
+But here's my problem. I showed this to my production manager and he said, 'So? We know Line 3 has issues. The operators are new.' So the data is correct but the people on the floor already know. Meena is telling us what we already know, just in Excel format.
+
+She also wrote something she calls an 'SOP' for the cutting section. Step-by-step process for how to handle a new order — from fabric receiving to pattern matching to cut-plan approval. I looked at it. It's well-written. But nobody uses it. She pinned it on the wall near the cutting master's station. It's still there. Nobody reads it.
+
+On the positive side — she did something useful with the dispatch team. She started tracking which orders are at risk of missing the ship date and sending me a daily email by 11 AM. Before this, I would find out about delays at 4 PM when the container was supposed to leave. Now I know by 11 AM and can push. Two weeks ago we saved a shipment to Decathlon because of this. That was good.
+
+My worry is that she's building things in Excel that nobody asked for and nobody uses. I need someone who solves problems on the floor, not someone who makes beautiful sheets in the office.
+
+Is she failing? No. She's trying. She's just not connecting her work to what actually matters here. If she learns to do that, she could be very good.`,
+
+    anil: `Anil is my right hand. I don't know how we managed before him.
+
+He handles everything. My vendor calls, my follow-ups, my weekly review meetings — he runs all of them. If I'm travelling, he manages the office. He knows every customer by name. He knows our pricing, our timelines, our problems.
+
+The production manager used to report to me directly. Now he calls Anil first. The accounts team coordinates with Anil on payment timelines. Even my business partner asks Anil before asking me sometimes.
+
+He is never late. Never misses a deadline. If I say get this done, it is done. No questions, no delays.
+
+But I will tell you something. Last month I was sick for two weeks. Everything stopped. My vendor didn't know who to call. The production manager was confused. Anil was there but he couldn't take decisions — he would call me even when I was resting. Everything depends on him being present and me being available to him.
+
+He hasn't built anything that runs without him. No process, no system, no documentation. When he leaves — and Fellows do leave — I will be in trouble.`
+  };
+
+  function loadSample(name) {
+    document.getElementById("transcript").value = SAMPLES[name];
+    // Hide previous results when loading a new sample
+    document.getElementById("results").style.display = "none";
+    setStatus("");
+  }
+
+  // ── Helpers ─────────────────────────────────────────────────────
   function bandClass(band) {
     if (!band) return "";
     const b = band.toLowerCase();
-    if (b.includes("attention"))   return "band-attention";
+    if (b.includes("attention"))    return "band-attention";
     if (b.includes("productivity")) return "band-productivity";
     if (b.includes("performance"))  return "band-performance";
     return "";
@@ -350,20 +340,23 @@
     document.getElementById("status").textContent = msg;
   }
 
-  // ── Main analyze function ───────────────────────────────────────
+  function setLoading(isLoading) {
+    document.getElementById("analyzeBtn").disabled = isLoading;
+    document.getElementById("spinner").className = "spinner" + (isLoading ? " visible" : "");
+  }
 
+  // ── Main analyze ─────────────────────────────────────────────────
   async function analyze() {
     const transcript = document.getElementById("transcript").value.trim();
 
     if (!transcript) {
-      setStatus("Please paste a transcript first.");
+      setStatus("Please paste a transcript or load a sample first.");
       return;
     }
 
-    // Reset UI
     document.getElementById("results").style.display = "none";
-    document.getElementById("analyzeBtn").disabled = true;
-    setStatus("Analyzing… this takes 20-40 seconds with a local model.");
+    setLoading(true);
+    setStatus("Analyzing… this takes 20–40 seconds with a local model.");
 
     try {
       const response = await fetch("http://localhost:5000/analyze", {
@@ -386,16 +379,14 @@
       setStatus("Could not reach backend. Is the server running on port 5000?");
       console.error(err);
     } finally {
-      document.getElementById("analyzeBtn").disabled = false;
+      setLoading(false);
     }
   }
 
-  // ── Render ─────────────────────────────────────────────────────
-
+  // ── Render ───────────────────────────────────────────────────────
   function renderResults(a) {
     const s = a.score || {};
 
-    // Score badge
     document.getElementById("scoreNum").textContent = s.value ?? "—";
     document.getElementById("scoreLabel").textContent = s.label ?? "";
     document.getElementById("scoreBand").textContent = s.band ?? "";
