@@ -48,14 +48,18 @@ function cleanAnalysis(analysis) {
 }
 
 async function generateAnalysis(transcript) {
-  const response = await axios.post(
-    "http://localhost:11434/api/generate",
-    {
-      model: "llama3.1",
-      prompt: buildPrompt(transcript),
-      stream: false,
+const response = await axios.post(
+  "http://localhost:11434/api/generate",
+  {
+    model: "llama3.1",
+    prompt: buildPrompt(transcript),
+    stream: false,
+    options: {
+      temperature: 0,     // deterministic output — same input = same output
+      seed: 42,           // fixed seed for reproducibility
     }
-  );
+  }
+);
   return recoverJSON(response.data.response);
 }
 
