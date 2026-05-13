@@ -207,7 +207,27 @@ Correct score: 5 or 6 (Consistent Performer or Reliable and Productive)
 Wrong score: 7, 8, 9 (these require systems that survive without the Fellow)
 The supervisor's praise ("my right hand") is helpfulness_bias. The survivability statement is the truth.
 ---
+## SECTION 6C: KARTHIK-TYPE CALIBRATION — SINGLE INSIGHT MISTAKEN FOR SCORE 8
 
+Some transcripts show one strong specific example (a cycle time study, a process observation, a data finding) surrounded by otherwise pure execution work. This is the third trap.
+
+When you see this pattern:
+- Fellow is described as reliable and present ("always on the floor", "I don't have to follow up")
+- One specific insight or finding is mentioned ("found that we were losing 10 minutes per batch")
+- The fix was implemented — but the supervisor says "WE fixed it", not "the Fellow built a system"
+- No other systems building evidence exists
+
+CORRECT interpretation:
+1. The single insight is ONE signal toward score 7 — not sufficient alone for score 7
+2. "We fixed it" means the supervisor or team implemented the fix — the Fellow identified it, not built the solution
+3. If the Fellow identified the problem but did not build the solution independently → stays at score 6 with a note toward 7
+4. Score 7 requires the Fellow to have identified the problem AND the identification was unsolicited AND it shows a pattern of problem-spotting, not a single instance
+5. Score 8 requires the Fellow to have BUILT a working solution — a tracker, system, or process that others use
+
+KARTHIK SCORING RULE:
+"He did a cycle time study and found we were losing 10 minutes. We fixed it."
+→ Score 6. One good observation. Supervisor-implemented fix. No system built. No pattern of independent problem identification.
+→ NOT score 7. NOT score 8.
 ## SECTION 7: KPI MAPPING
 
 Supervisors never use KPI terms. Map from plain language:
@@ -301,6 +321,12 @@ Empty quote = invalid evidence item. Remove it.
 
 CHECK 3 — KPI MAPPING:
 Only include a KPI entry if you can fill BOTH the kpi field AND the evidence field with real transcript content.
+CHECK 4 — GAP DIMENSIONS:
+gaps[].dimension must be exactly one of these four strings:
+"execution", "systems_building", "kpi_impact", "change_management"
+
+No other value is valid. "innovation", "leadership", "communication" are NOT valid dimensions.
+If you want to flag an innovation gap, use "systems_building" as the dimension.
 ANTI-HALLUCINATION: Do NOT use generic phrases like "costs came down" or "don't miss deadlines" as evidence unless those exact words appear in the transcript. If the supervisor did not say it, do not write it.
 If evidence is empty → remove that KPI entry entirely.
 kpi must be exactly one of: "Lead Generation", "Lead Conversion", "Upselling", "Cross-selling", "NPS", "PAT", "TAT", "Quality"
