@@ -51,7 +51,7 @@ async function generateAnalysis(transcript) {
 const response = await axios.post(
   "http://localhost:11434/api/generate",
   {
-    model: "llama3.1",
+    model: "mistral",
     prompt: buildPrompt(transcript),
     stream: false,
     options: {

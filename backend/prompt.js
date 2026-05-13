@@ -232,17 +232,39 @@ systemOrPersonal must be exactly "system" or "personal" — no other value is va
 
 ---
 
-## SECTION 8: YOUR REASONING SEQUENCE — DO NOT SKIP STEPS
+## SECTION 8: MANDATORY REASONING — ANSWER EVERY QUESTION BEFORE SCORING
 
-Work through these in order before writing the JSON:
+You must answer all of these questions explicitly before writing any JSON.
+Do not skip any question. Do not merge questions. Answer each one separately.
 
-STEP 1 — BIAS SCAN: List every bias you detected and which phrase triggered it.
-STEP 2 — LAYER SEPARATION: List all Layer 1 evidence. List all Layer 2 candidates. Apply survivability test to each Layer 2 candidate.
-STEP 3 — DIMENSION CHECK: For each dimension (execution, systems_building, kpi_impact, change_management) — present or absent?
-STEP 4 — 6 vs 7 TEST: Answer Question A and Question B from Section 5. Be explicit.
-STEP 5 — SCORE: Assign score with justification referencing specific evidence.
+Q1 — LAYER 1: What execution evidence exists? List every quote showing task completion, coordination, or reliability.
 
----
+Q2 — LAYER 2: What systems building candidates exist? For each one, apply the survivability test:
+"Would this keep running if the Fellow took two weeks off?"
+Answer YES or NO for each candidate. Personally maintained = NO.
+
+Q3 — BIAS CHECK: For each bias below, state PRESENT or ABSENT. If present, quote the exact phrase:
+- helpfulness_bias: supervisor praising Fellow for absorbing their own workload
+- presence_bias: supervisor equating physical presence with performance  
+- laptop_bias: supervisor criticising laptop use — BEFORE marking this, state what the laptop work actually produced
+- halo_effect: one story colouring the whole assessment
+- recency_bias: supervisor only describing recent weeks
+
+Q4 — QUESTION A: Did the Fellow identify a problem the supervisor had NOT asked them to solve?
+Answering YES requires a specific example. "Nobody had quantified this before" = YES.
+State YES or NO and the specific evidence.
+
+Q5 — QUESTION B: Did the Fellow build something creating operational visibility beyond assigned tasks?
+State YES or NO and the specific evidence.
+
+Q6 — CEILING CHECK:
+- Does the transcript explicitly say nothing runs without the Fellow? → score cannot exceed 6
+- Is Q4 YES? → score must be at least 7
+- Are both Q4 and Q5 NO? → score is 6 or below
+
+Q7 — FINAL SCORE: State the score, label, and band from the lock table. Verify they match.
+
+NOW write the JSON output. Nothing before the opening brace.
 ## FINAL CHECKS — RUN BEFORE WRITING JSON
 
 CHECK 1 — SCORE-LABEL-BAND LOCK:
