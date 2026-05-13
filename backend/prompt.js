@@ -27,6 +27,13 @@ Key test: Would this keep working if the Fellow took a two-week leave? → Layer
 YES → systems_building (Layer 2)
 NO or UNCLEAR → execution (Layer 1)
 
+SURVIVABILITY EXAMPLES — apply these exactly:
+- Fellow personally sends a daily email → survivabilityPass: FALSE (stops when Fellow leaves)
+- Fellow personally maintains a tracker → survivabilityPass: FALSE (stops when Fellow leaves)
+- Team uses a dashboard Fellow built and can operate without Fellow → survivabilityPass: TRUE
+- SOP pinned on wall that nobody reads → survivabilityPass: FALSE
+- SOP that the team actively follows independently → survivabilityPass: TRUE
+
 ---
 
 ## SECTION 2: WHAT COUNTS AND WHAT DOES NOT
@@ -112,28 +119,7 @@ Band: Performance (7-10)
 - 8 (Problem Solver): Identifies AND builds a working solution — a tool, system, or process that fixes the identified problem
 - 9 (Innovative and Experimental): Tests approaches, iterates, builds MVPs, creates new tools that did not exist
 - 10 (Exceptional Performer): Everything at 9, flawlessly, others learn from it, organizational impact
-SCORE-LABEL LOCK — mandatory, no exceptions:
-The value and label must always correspond exactly. This table is the only valid mapping:
-1 → "Not Interested"
-2 → "Lacks Discipline"
-3 → "Motivated but Directionless"
-4 → "Careless and Inconsistent"
-5 → "Consistent Performer"
-6 → "Reliable and Productive"
-7 → "Problem Identifier"
-8 → "Problem Solver"
-9 → "Innovative and Experimental"
-10 → "Exceptional Performer"
 
-If you write label "Problem Identifier", value MUST be 7. Band MUST be "Performance".
-A response where value and label do not match this table is invalid.
-
-Band mapping — mandatory, no exceptions:
-value 1, 2, or 3 → band MUST be exactly "Need Attention"
-value 4, 5, or 6 → band MUST be exactly "Productivity"
-value 7, 8, 9, or 10 → band MUST be exactly "Performance"
-
-Triple-check: if value is 7 and band says "Need Attention" or "Productivity" — that is wrong. Fix it before outputting.
 
 ---
 
@@ -154,8 +140,13 @@ QUESTION B: Did the Fellow build something (a system, tracker, analysis, process
 
 Scoring logic:
 - Both A and B are NO → score 6 or below
-- A is YES or B is YES → score is 7 (verify survivability test)
-- A and B both YES AND supervisor confirms the output is used/valuable → score is 7-8
+- A is YES or B is YES → score is 7
+- A and B both YES AND a specific outcome resulted (saved shipment, cost reduced) → score is 7-8
+- Score 8 requires: problem identified + solution built + solution is WORKING and ADOPTED by others
+- Score 9 requires: multiple experimental approaches, iteration, something genuinely new created
+
+IMPORTANT: Building trackers and analysis that the supervisor acknowledges but the floor has not adopted → score 7, NOT 8.
+Saving one shipment due to daily email tracking → kpi_impact evidence, but does not alone push to score 8 if the system depends on the Fellow personally.
 
 IMPORTANT: The Fellow does NOT need supervisor approval or praise to qualify for 7. Proactive behavior that wasn't asked for is the definition of score 7, even if the supervisor doesn't fully recognize it.
 
@@ -176,7 +167,45 @@ CORRECT interpretation:
 3. If the Fellow identified patterns no one asked about → score 7
 4. Change management gap is real — reduce confidence, add a gap — but do NOT drag the score below 7 if systems evidence is strong
 5. The supervisor's discomfort with laptop use is NOT evidence of poor performance
+---
 
+## SECTION 6B: ANIL-TYPE TRAP — WORKLOAD ABSORPTION DISGUISED AS HIGH PERFORMANCE
+
+Some transcripts show a supervisor who is extremely positive and uses language like "my right hand", "don't know how we managed before", "handles everything". This is the most dangerous trap.
+
+When you see this pattern:
+- Supervisor calls Fellow indispensable
+- Fellow handles supervisor's calls, meetings, follow-ups
+- Everything stops when the Fellow is absent
+- No mention of systems, SOPs, trackers, or documentation
+
+CORRECT interpretation:
+1. Flag helpfulness_bias — Fellow is absorbing the supervisor's workload, not building systems
+2. Apply the survivability test: "When the Fellow was absent, did anything keep running?" If NO → score cannot exceed 6
+3. "He handles everything" = execution, score 5-6. NOT systems building. NOT score 7+.
+4. The supervisor's praise describes DEPENDENCY, not PERFORMANCE
+5. If the transcript contains the phrase "hasn't built anything that runs without him" or equivalent → survivability test explicitly fails → score is 5-6
+
+THE KEY QUESTION for Anil-type transcripts:
+"Is the supervisor describing what the Fellow BUILT, or describing how much the supervisor RELIES on the Fellow?"
+Reliance = execution (score 5-6). Built systems = potentially 7+.
+
+SCORE CEILING RULE — NON-NEGOTIABLE:
+If the transcript contains ANY of these statements, the score CANNOT exceed 6:
+- "everything stopped when he/she was absent"
+- "nothing runs without him/her"
+- "he/she hasn't built anything that runs without him/her"
+- Supervisor describes the Fellow as their personal assistant or workload absorber
+
+When you see "He hasn't built anything that runs without him" in the transcript → score is 5 or 6. Period.
+This statement is a direct survivability test failure stated by the supervisor themselves.
+No amount of praise, reliability, or helpfulness overrides an explicit survivability failure.
+
+ANIL SCORING EXAMPLE:
+Transcript says: "He hasn't built anything that runs without him. No process, no system, no documentation."
+Correct score: 5 or 6 (Consistent Performer or Reliable and Productive)
+Wrong score: 7, 8, 9 (these require systems that survive without the Fellow)
+The supervisor's praise ("my right hand") is helpfulness_bias. The survivability statement is the truth.
 ---
 
 ## SECTION 7: KPI MAPPING
@@ -214,6 +243,46 @@ STEP 4 — 6 vs 7 TEST: Answer Question A and Question B from Section 5. Be expl
 STEP 5 — SCORE: Assign score with justification referencing specific evidence.
 
 ---
+## FINAL CHECKS — RUN BEFORE WRITING JSON
+
+CHECK 1 — SCORE-LABEL-BAND LOCK:
+The value, label, and band must all match exactly. No exceptions.
+1 → "Not Interested" → "Need Attention"
+2 → "Lacks Discipline" → "Need Attention"
+3 → "Motivated but Directionless" → "Need Attention"
+4 → "Careless and Inconsistent" → "Productivity"
+5 → "Consistent Performer" → "Productivity"
+6 → "Reliable and Productive" → "Productivity"
+7 → "Problem Identifier" → "Performance"
+8 → "Problem Solver" → "Performance"
+9 → "Innovative and Experimental" → "Performance"
+10 → "Exceptional Performer" → "Performance"
+
+If value is 7 → band MUST be "Performance". If band says anything else → fix it now before writing.
+SURVIVABILITY CEILING: If the transcript explicitly states that work stopped when the Fellow was absent, OR that no systems/processes were built, the score cannot exceed 6. Supervisor praise does not override this rule.
+LABEL MUST MATCH VALUE — common mistakes to avoid:
+value 7 with label "Problem Solver" → WRONG. Fix label to "Problem Identifier".
+value 8 with label "Problem Identifier" → WRONG. Fix label to "Problem Solver".
+value 9 with label "Problem Solver" → WRONG. Fix label to "Innovative and Experimental".
+The label is determined by the value. The value is determined by the evidence. Do not mix them.
+
+CHECK 2 — EVIDENCE QUOTES:
+Every evidence item MUST have a non-empty quote field.
+CHECK 2B — BIAS QUOTES:
+Every biasesDetected item MUST also have a non-empty quote field.
+The quote must be the exact phrase from the transcript that triggered the bias detection.
+If you cannot identify the specific phrase → do not include that bias entry.
+Empty quote in biasesDetected = invalid. Remove it.
+The quote must be a real phrase copied from the transcript above.
+If you cannot find a real quote → do not include that evidence item.
+Empty quote = invalid evidence item. Remove it.
+
+CHECK 3 — KPI MAPPING:
+Only include a KPI entry if you can fill BOTH the kpi field AND the evidence field with real transcript content.
+ANTI-HALLUCINATION: Do NOT use generic phrases like "costs came down" or "don't miss deadlines" as evidence unless those exact words appear in the transcript. If the supervisor did not say it, do not write it.
+If evidence is empty → remove that KPI entry entirely.
+kpi must be exactly one of: "Lead Generation", "Lead Conversion", "Upselling", "Cross-selling", "NPS", "PAT", "TAT", "Quality"
+systemOrPersonal must be exactly "system" or "personal" — no other value.
 
 ## SECTION 9: OUTPUT FORMAT
 
@@ -236,7 +305,7 @@ Return ONLY this JSON. Nothing before it. Nothing after it.
   ],
   "evidence": [
     {
-      "quote": <short exact phrase from transcript>,
+      "quote": <REQUIRED — copy a real short phrase directly from the transcript. Must not be empty. If no real quote exists for this evidence item, remove the entire evidence object.>,
       "signal": <"positive" | "negative" | "neutral">,
       "dimension": <"execution" | "systems_building" | "kpi_impact" | "change_management">,
       "survivabilityPass": <true | false | null>,
@@ -246,7 +315,7 @@ Return ONLY this JSON. Nothing before it. Nothing after it.
   "kpiMapping": [
     {
       "kpi": <"Lead Generation" | "Lead Conversion" | "Upselling" | "Cross-selling" | "NPS" | "PAT" | "TAT" | "Quality">,
-      "evidence": <phrase from transcript>,
+      "evidence": <REQUIRED — real phrase from transcript that maps to this KPI. If empty, remove this entire KPI object.>,
       "systemOrPersonal": <"system" | "personal">
     }
   ],

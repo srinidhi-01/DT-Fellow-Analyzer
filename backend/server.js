@@ -1,39 +1,64 @@
 // backend/server.js
 const express = require("express");
-const cors = require("cors");
-const axios = require("axios");
-const { buildPrompt } = require("./prompt");
-const { recoverJSON } = require("./jsonHelper"); // ← new import
+const cors    = require("cors");
+const axios   = require("axios");
+
+const { buildPrompt }     = require("./prompt");
+const { recoverJSON }     = require("./jsonHelper");
+const { enforceScoreMap } = require("./scoreMap");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ------------------------------------------------------------------
-// Calls Ollama once and attempts JSON recovery on the response.
-// Returns { parsed, method } or throws if Ollama itself fails.
-// Keeping this as a named function makes the retry logic readable.
-// ------------------------------------------------------------------
+const VALID_KPIS = [
+  "Lead Generation", "Lead Conversion", "Upselling", "Cross-selling",
+  "NPS", "PAT", "TAT", "Quality",
+];
+
+function cleanAnalysis(analysis) {
+  if (!analysis || analysis.error) return analysis;
+
+  enforceScoreMap(analysis);
+
+  if (Array.isArray(analysis.kpiMapping)) {
+    analysis.kpiMapping = analysis.kpiMapping.filter(
+      (k) =>
+        k.kpi &&
+        VALID_KPIS.includes(k.kpi) &&
+        k.evidence &&
+        k.evidence.trim() !== "" &&
+        (k.systemOrPersonal === "system" || k.systemOrPersonal === "personal")
+    );
+  }
+
+  if (Array.isArray(analysis.biasesDetected)) {
+    analysis.biasesDetected = analysis.biasesDetected.filter(
+      (b) => b.quote && b.quote.trim() !== ""
+    );
+  }
+
+  if (Array.isArray(analysis.evidence)) {
+    analysis.evidence = analysis.evidence.filter(
+      (e) => e.quote && e.quote.trim() !== ""
+    );
+  }
+
+  return analysis;
+}
+
 async function generateAnalysis(transcript) {
   const response = await axios.post(
     "http://localhost:11434/api/generate",
     {
-      model: "llama3.2",
+      model: "llama3.1",
       prompt: buildPrompt(transcript),
       stream: false,
     }
   );
-
-  const rawOutput = response.data.response;
-  return recoverJSON(rawOutput);
+  return recoverJSON(response.data.response);
 }
 
-// ------------------------------------------------------------------
-// Retries generateAnalysis up to maxAttempts times.
-// Only retries if JSON recovery failed — not on Ollama network errors.
-// maxAttempts = 2 is intentional: one retry catches most transient
-// failures without slowing down the happy path.
-// ------------------------------------------------------------------
 async function generateWithRetry(transcript, maxAttempts = 2) {
   let lastRaw = "";
 
@@ -42,50 +67,40 @@ async function generateWithRetry(transcript, maxAttempts = 2) {
     lastRaw = result.raw;
 
     if (result.parsed !== null) {
-      console.log(`[analyze] JSON recovered via: ${result.method} (attempt ${attempt})`);
+      console.log(`[analyze] success via: ${result.method} (attempt ${attempt})`);
       return result.parsed;
     }
 
-    console.warn(`[analyze] Attempt ${attempt} failed JSON recovery. Retrying...`);
+    console.warn(`[analyze] attempt ${attempt} failed. Retrying...`);
   }
 
-  // All attempts exhausted — return a structured error instead of crashing
-  return {
-    error: "Could not extract valid JSON after retries",
-    raw: lastRaw,
-  };
+  return { error: "Could not extract valid JSON after retries", raw: lastRaw };
 }
 
-// ------------------------------------------------------------------
-// Route: POST /analyze
-// ------------------------------------------------------------------
 app.post("/analyze", async (req, res) => {
   try {
-    const transcript = req.body.transcript;
+    const { transcript } = req.body;
 
     if (!transcript || transcript.trim() === "") {
-      return res.status(400).json({
-        success: false,
-        message: "Transcript is required",
-      });
+      return res.status(400).json({ success: false, message: "Transcript is required" });
     }
 
-    const analysis = await generateWithRetry(transcript);
+    const rawAnalysis = await generateWithRetry(transcript);
+    const analysis    = cleanAnalysis(rawAnalysis);
 
-    res.json({
-      success: true,
-      analysis,
-    });
+    // This line PROVES cleanAnalysis ran — check your terminal for it
+    console.log(
+      `[analyze] FINAL → score: ${analysis?.score?.value} | ` +
+      `label: ${analysis?.score?.label} | ` +
+      `band: ${analysis?.score?.band}`
+    );
+
+    res.json({ success: true, analysis });
 
   } catch (error) {
     console.error("[analyze] Unexpected error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-    });
+    res.status(500).json({ success: false, message: "Something went wrong" });
   }
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
-});
+app.listen(5000, () => console.log("Server running on port 5000"));
